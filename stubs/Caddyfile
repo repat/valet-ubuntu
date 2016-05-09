@@ -1,4 +1,4 @@
-import /Users/USER/.valet/Caddy/*
+import /user/USER/.valet/Caddy/*
 
 :80 {
     fastcgi / 127.0.0.1:9000 php {

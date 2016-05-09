@@ -8,15 +8,15 @@
 
 ## Introduction
 
-Valet is a Laravel development environment for Mac minimalists. No Vagrant, No Apache, No Nginx, No `/etc/hosts` file. You can even share your sites publicly using local tunnels. _Yeah, we like it too._
+Valet - Ubuntu flavor - is a Laravel development environment for Ubuntu minimalists. No Vagrant, No Apache, No Nginx, No `/etc/hosts` file. You can even share your sites publicly using local tunnels. _Yeah, we like it too._
 
-Laravel Valet configures your Mac to always run [Caddy](https://caddyserver.com/) in the background when your machine starts. Then, using [DnsMasq](https://en.wikipedia.org/wiki/Dnsmasq), Valet proxies all requests on the `*.dev` domain to point to sites installed on your local machine.
+Laravel Valet configures your Ubuntu to always run [Caddy](https://caddyserver.com/) in the background when your machine starts. Then, using [DnsMasq](https://en.wikipedia.org/wiki/Dnsmasq), Valet proxies all requests on the `*.dev` domain to point to sites installed on your local machine.
 
 In other words, a blazing fast Laravel development environment that uses roughly 7mb of RAM. Valet isn't a complete replacement for Vagrant or Homestead, but provides a great alternative if you want flexible basics, prefer extreme speed, or are working on a machine with a limited amount of RAM.
 
 ## Official Documentation
 
-Documentation for Valet can be found on the [Laravel website](http://laravel.com/docs/5.2/valet).
+Documentation for Valet can be found on the [Laravel website](http://laravel.com/docs/5.2/valet). This version is slightly adopted for Ubuntu 16.04 and can by no means be considered tested or stable. Also, the whole (phpunit) test folder needs to be adopted for Ubuntu.
 
 ## License
 

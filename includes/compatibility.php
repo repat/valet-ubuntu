@@ -5,8 +5,9 @@
  */
 $inTestingEnvironment = strpos($_SERVER['SCRIPT_NAME'], 'phpunit') !== false;
 
-if (PHP_OS != 'Darwin' && ! $inTestingEnvironment) {
-    echo 'Valet only supports the Mac operating system.'.PHP_EOL;
+if (PHP_OS != 'Linux' && ! $inTestingEnvironment && php_uname('m') === 'x86_64' && strpos($php_uname('m'), 'Ubuntu') !== false)
+) {
+    echo 'Valet-Ubuntu only supports the Ubuntu operating system with 64-Bit.'.PHP_EOL;
 
     exit(1);
 }
@@ -17,8 +18,8 @@ if (version_compare(PHP_VERSION, '5.5.9', '<')) {
     exit(1);
 }
 
-if (exec('which brew') != '/usr/local/bin/brew' && ! $inTestingEnvironment) {
-    echo 'Valet requires Brew to be installed on your Mac.';
+if (exec('which apt-get') != '/usr/bin/apt-get' && ! $inTestingEnvironment) {
+    echo 'Valet-Ubuntu requires apt-get to be installed on your Ubuntu machine.';
 
     exit(1);
 }

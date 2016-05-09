@@ -11,7 +11,7 @@ if (file_exists(__DIR__.'/vendor/autoload.php')) {
 }
 
 use Silly\Application;
-use Valet\Facades\Brew;
+use Valet\Facades\AptGet;
 use Valet\Facades\Site;
 use Valet\Facades\Caddy;
 use Valet\Facades\Ngrok;

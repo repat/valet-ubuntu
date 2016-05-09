@@ -7,24 +7,24 @@ use Symfony\Component\Process\Process;
 
 class PhpFpm
 {
-    var $brew, $cli, $files;
+    var $aptGet, $cli, $files;
 
     var $taps = [
-        'homebrew/dupes', 'homebrew/versions', 'homebrew/homebrew-php'
+        'php7.0'
     ];
 
     /**
      * Create a new PHP FPM class instance.
      *
-     * @param  Brew  $brew
+     * @param  AptGet  $aptGet
      * @param  CommandLine  $cli
      * @param  Filesystem  $files
      * @return void
      */
-    function __construct(Brew $brew, CommandLine $cli, Filesystem $files)
+    function __construct(AptGet $aptGet, CommandLine $cli, Filesystem $files)
     {
         $this->cli = $cli;
-        $this->brew = $brew;
+        $this->aptGet = $aptGet;
         $this->files = $files;
     }
 
@@ -35,8 +35,8 @@ class PhpFpm
      */
     function install()
     {
-        if (! $this->brew->installed('php70') && ! $this->brew->installed('php56')) {
-            $this->brew->ensureInstalled('php70', $this->taps);
+        if (! $this->aptGet->installed('php70') && ! $this->aptGet->installed('php56')) {
+            $this->aptGet->ensureInstalled('php70', $this->taps);
         }
 
         $this->updateConfiguration();
@@ -68,7 +68,7 @@ class PhpFpm
     {
         $this->stop();
 
-        $this->brew->restartLinkedPhp();
+        $this->aptGet->restartLinkedPhp();
     }
 
     /**
@@ -78,7 +78,7 @@ class PhpFpm
      */
     function stop()
     {
-        $this->brew->stopService('php56', 'php70');
+        $this->aptGet->stopService('php56', 'php70');
     }
 
     /**
@@ -88,7 +88,8 @@ class PhpFpm
      */
     function fpmConfigPath()
     {
-        if ($this->brew->linkedPhp() === 'php70') {
+        // TODO I think those filepaths are wrong for Ubuntu
+        if ($this->aptGet->linkedPhp() === 'php70') {
             return '/usr/local/etc/php/7.0/php-fpm.d/www.conf';
         } else {
             return '/usr/local/etc/php/5.6/php-fpm.conf';

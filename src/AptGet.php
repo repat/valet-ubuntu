@@ -5,13 +5,13 @@ namespace Valet;
 use Exception;
 use DomainException;
 
-class Brew
+class AptGet
 {
     var $cli;
     var $files;
 
     /**
-     * Create a new Brew instance.
+     * Create a new AptGet instance.
      *
      * @param  CommandLine  $cli
      * @param  Filesystem  $files
@@ -31,17 +31,17 @@ class Brew
      */
     function installed($formula)
     {
-        return in_array($formula, explode(PHP_EOL, $this->cli->run('brew list | grep '.$formula)));
+        return in_array($formula, explode(PHP_EOL, $this->cli->run('dpkg --get-selections | grep '.$formula)));
     }
 
     /**
-     * Determine if a compatible PHP version is Homebrewed.
+     * Determine if a compatible PHP version is installed.
      *
      * @return bool
      */
     function hasInstalledPhp()
     {
-        return $this->installed('php70') || $this->installed('php56');
+        return $this->installed('php7.0') || $this->installed('php5.6');
     }
 
     /**
@@ -71,12 +71,12 @@ class Brew
             $this->tap($taps);
         }
 
-        output('<info>['.$formula.'] is not installed, installing it now via Brew...</info> 🍻');
+        output('<info>['.$formula.'] is not installed, installing it now via apt-get...</info> 🍻');
 
-        $this->cli->run('brew install '.$formula, function ($errorOutput) use ($formula) {
+        $this->cli->run('apt-get install '.$formula, function ($errorOutput) use ($formula) {
             output($errorOutput);
 
-            throw new DomainException('Brew was unable to install ['.$formula.'].');
+            throw new DomainException('apt-get was unable to install ['.$formula.'].');
         });
     }
 
@@ -91,12 +91,12 @@ class Brew
         $formulas = is_array($formulas) ? $formulas : func_get_args();
 
         foreach ($formulas as $formula) {
-            $this->cli->passthru('sudo -u '.user().' brew tap '.$formula);
+            $this->cli->passthru('sudo -u '.user().' apt-get install '.$formula);
         }
     }
 
     /**
-     * Restart the given Homebrew services.
+     * Restart the given service
      *
      * @param
      */
@@ -105,12 +105,12 @@ class Brew
         $services = is_array($services) ? $services : func_get_args();
 
         foreach ($services as $service) {
-            $this->cli->quietly('sudo brew services restart '.$service);
+            $this->cli->quietly('sudo service '.$service . ' restart');
         }
     }
 
     /**
-     * Stop the given Homebrew services.
+     * Stop the given service
      *
      * @param
      */
@@ -119,26 +119,26 @@ class Brew
         $services = is_array($services) ? $services : func_get_args();
 
         foreach ($services as $service) {
-            $this->cli->quietly('sudo brew services stop '.$service);
+            $this->cli->quietly('sudo service '.$service . ' stop');
         }
     }
 
     /**
-     * Determine which version of PHP is linked in Homebrew.
+     * Determine which version of PHP is linked on the system.
      *
      * @return string
      */
     function linkedPhp()
     {
-        if (! $this->files->isLink('/usr/local/bin/php')) {
+        if (! $this->files->isLink('/usr/bin/php')) {
             throw new DomainException("Unable to determine linked PHP.");
         }
 
-        $resolvedPath = $this->files->readLink('/usr/local/bin/php');
+        $resolvedPath = $this->files->readLink('/etc/alternatives/php');
 
-        if (strpos($resolvedPath, 'php70') !== false) {
-            return 'php70';
-        } elseif (strpos($resolvedPath, 'php56') !== false) {
+        if (strpos($resolvedPath, 'php7.0') !== false) {
+            return 'php7.0-fpm';
+        } elseif (strpos($resolvedPath, 'php5.6') !== false) {
             return 'php56';
         } else {
             throw new DomainException("Unable to determine linked PHP.");
@@ -146,7 +146,7 @@ class Brew
     }
 
     /**
-     * Restart the linked PHP-FPM Homebrew service.
+     * Restart the linked PHP-FPM service.
      *
      * @return void
      */

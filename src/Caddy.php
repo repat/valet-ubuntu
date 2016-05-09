@@ -6,10 +6,11 @@ class Caddy
 {
     var $cli;
     var $files;
-    var $daemonPath = '/Library/LaunchDaemons/com.laravel.valetServer.plist';
+    // TODO: has to be changed
+    var $daemonPath = '/tmp/com.laravel.valetServer.plist';
 
     /**
-     * Create a new Brew instance.
+     * Create a new Caddy instance.
      *
      * @param  CommandLine  $cli
      * @param  Filesystem  $files
@@ -88,9 +89,9 @@ class Caddy
      */
     function restart()
     {
-        $this->cli->quietly('launchctl unload '.$this->daemonPath);
+        $this->cli->quietly('service stop '.$this->daemonPath);
 
-        $this->cli->quietly('launchctl load '.$this->daemonPath);
+        $this->cli->quietly('service start '.$this->daemonPath);
     }
 
     /**
@@ -100,7 +101,7 @@ class Caddy
      */
     function stop()
     {
-        $this->cli->quietly('launchctl unload '.$this->daemonPath);
+        $this->cli->quietly('launchctl stop '.$this->daemonPath);
     }
 
     /**

@@ -7,7 +7,7 @@ use Symfony\Component\Process\Process;
 
 class DnsMasq
 {
-    var $brew, $cli, $files;
+    var $aptGet, $cli, $files;
 
     var $resolverPath = '/etc/resolver';
     var $configPath = '/usr/local/etc/dnsmasq.conf';
@@ -16,15 +16,15 @@ class DnsMasq
     /**
      * Create a new DnsMasq instance.
      *
-     * @param  Brew  $brew
+     * @param  AptGet  $aptGet
      * @param  CommandLine  $cli
      * @param  Filesystem  $files
      * @return void
      */
-    function __construct(Brew $brew, CommandLine $cli, Filesystem $files)
+    function __construct(AptGet $aptGet, CommandLine $cli, Filesystem $files)
     {
         $this->cli = $cli;
-        $this->brew = $brew;
+        $this->aptGet = $aptGet;
         $this->files = $files;
     }
 
@@ -35,7 +35,7 @@ class DnsMasq
      */
     function install($domain = 'dev')
     {
-        $this->brew->ensureInstalled('dnsmasq');
+        $this->aptGet->ensureInstalled('dnsmasq');
 
         // For DnsMasq, we create our own custom configuration file which will be imported
         // in the main DnsMasq file. This allows Valet to make changes to our own files
@@ -44,7 +44,7 @@ class DnsMasq
 
         $this->createDomainResolver($domain);
 
-        $this->brew->restartService('dnsmasq');
+        $this->aptGet->restartService('dnsmasq');
     }
 
     /**
@@ -65,7 +65,7 @@ class DnsMasq
     }
 
     /**
-     * Copy the Homebrew installed example DnsMasq configuration file.
+     * Copy the apt-get installed example DnsMasq configuration file.
      *
      * @return void
      */
